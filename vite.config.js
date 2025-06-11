@@ -15,8 +15,6 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
   },
+  publicPath: process.env.NODE_ENV === "production" ? "/To-Do-Vue.js/" : "/",
 })
 
-module.exports = {
-  publicPath: process.env.NODE_ENV === "production" ? "/REPO_NAME/" : "/",
-};
