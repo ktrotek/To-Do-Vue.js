@@ -9,9 +9,9 @@ const name = ref('')
 const input_content =ref('')
 const input_category = ref(null)
 
-const todos_asc = computed (() => todos.value.sort((a,b) => {
+/* const todos_asc = computed (() => todos.value.sort((a,b) => {
   return b.createdAt - a.createdAt
-}))
+})) */
 
 const addTodo = () => {
     if (input_content.value.trim() === ''  || input_category.value === null ){
@@ -32,8 +32,8 @@ const removeTodo = todo => {
   todos.value = todos.value.filter (t => t !== todo)
 }
 
-const filters = ref(['all', 'completed', 'active']);
-const activeFilter = ref(['active']);
+const filters = ref(['all', 'active', 'completed']);
+const activeFilter = ref('active');
 
 const filterTodo = (type) => {
     activeFilter.value = type;
@@ -52,26 +52,22 @@ const filteredTodos = computed (() => {
     return sorted;
 });
 
-
-const completedCount = computed(() => {
-    return todos.value.filter(todo => !todo.done).length;
-});
-
 const activeCount = computed(() => {
   return todos.value.filter(todo => !todo.done).length;
 });
 
-const darkMode = ref(false)
-
-watch(darkMode, (val) => {
-    document.body.classList.toggle('dark', val)
-    localStorage.setItem('darkMode', val)
+const completedCount = computed(() => {
+    return todos.value.filter(todo => todo.done).length;
 })
+
+const saveOrder = () => {
+  localStorage.setItem('todos', JSON.stringify(todos.value))
+}
 
 // Watch for changes and save to localStorage
 watch(todos, newVal => {
   localStorage.setItem('todos', JSON.stringify(newVal))
-},{deep: true})
+}, {deep: true})
 
 watch (name, (newVal) => {
   localStorage.setItem('name', newVal)
@@ -83,6 +79,17 @@ onMounted(() => {
   darkMode.value = localStorage.getItem('darkMode') === 'true'
 })
 
+/* Dark Mode */ 
+
+const darkMode = ref(false)
+
+watch(darkMode, (val) => {
+    document.body.classList.toggle('dark', val)
+    localStorage.setItem('darkMode', val)
+})
+
+
+
 </script>
 
 <template>
@@ -91,11 +98,12 @@ onMounted(() => {
         <section class="greeting">
 
             <h2 class=title>
-              what's up, <input type="text" placeholder="Name here"
+              Welcome Back, <input type="text" placeholder="Name here"
               v-model="name"/>
             </h2>
 
-        <p> {{ activeCount }} </p>
+        <p> You have {{ activeCount }} active tasks </p>
+        <p> You have completed {{ completedCount }} tasks far! </p>
         </section>
         
         <section class="create-todo">
@@ -128,8 +136,6 @@ onMounted(() => {
         </section>
 
         <section class="todo-list">
-
-          <h3> TASKS</h3> 
           <div class="filters"> <!-- Add CSS -->
             <p v-for="(filter, index) in filters" :key="index">
                 <span
@@ -151,16 +157,19 @@ onMounted(() => {
               
               </div>
 
-              <draggable v-model="todos" 
+              <draggable 
+                  v-else
+                  :list="filteredTodos"
                   item-key="createdAt"
-                  tag="div"
                   @end="saveOrder"
                 >
                 <template #item="{ element: todo }">
-                <div v-for="todo in filteredTodos"
-                :key="todo.createdAt"
-                :class="`todo-item ${todo.done && 'done'}`">
-
+                <div 
+                v-show="(activeFilter === 'all') || 
+                        (activeFilter === 'completed' && todo.done) ||
+                        (activeFilter === 'active' && !todo.done)"
+                    :class="`todo-item ${todo.done && 'done'}`"
+                    >
                   <label>
                     <input type="checkbox" v-model="todo.done" />
                     <span :class="`bubble ${todo.category}`"></span>

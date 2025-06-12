@@ -237,6 +237,11 @@ input:checked ~ .bubble::after {
 	justify-content: center;
 	gap: 15px;
 	margin-bottom: 20px;
+	color: #EA40A4;
+  }
+
+  .filter:hover {
+	color: #3A82EE;
   }
   
   .filter-btn {
