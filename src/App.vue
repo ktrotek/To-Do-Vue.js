@@ -98,7 +98,7 @@ watch(darkMode, (val) => {
         <section class="greeting">
 
             <h2 class=title>
-              Welcome Back, <input type="text" placeholder="Name here"
+              Welcome Back, <input type="text" placeholder="add your name here"
               v-model="name"/>
             </h2>
 
@@ -110,7 +110,7 @@ watch(darkMode, (val) => {
 
           <form @submit.prevent="addTodo"> 
               <h4> What's your goals today? </h4>
-              <input type="text" placeholder="e.g. make a video" v-model="input_content"/>
+              <input type="text" placeholder="E.g. make a video" v-model="input_content"/>
 
 
               <h4> Pick a category</h4>
@@ -131,12 +131,12 @@ watch(darkMode, (val) => {
 
               </div>
               
-              <input type="submit" value="Add todo">
+              <input type="submit" value="Add Task">
           </form>
         </section>
 
         <section class="todo-list">
-          <div class="filters"> <!-- Add CSS -->
+          <div class="filters">
             <p v-for="(filter, index) in filters" :key="index">
                 <span
                   @click="filterTodo(filter)"
